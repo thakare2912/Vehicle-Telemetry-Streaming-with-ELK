@@ -13,12 +13,28 @@ Simulated real-time vehicle telemetry data including speed, fuel level, engine a
 - **Visualization**: Kibana is used to build interactive real-time dashboards to monitor vehicle health, detect anomalies, and alert on critical conditions.
 
 ---
-
 ## Architecture Diagram
 
-```plaintext
-Vehicle Telemetry Producer (Python) 
-        ↓ Kafka Topic: vehicle_telemetry 
-        ↓ Spark Structured Streaming (Enrichment & Processing) 
-        ↓ Elasticsearch 
-        ↓ Kibana Dashboard (Real-time Visualization & Alerts)
+```mermaid
+graph LR
+    A[Vehicle Simulator] -->|JSON Telemetry| B[Kafka]
+    B -->|Stream| C[Spark]
+    C -->|Enriched Data| D[Elasticsearch]
+    D -->|Visualize| E[Kibana]
+    
+    subgraph Data Producers
+        A
+    end
+    
+    subgraph Streaming Layer
+        B["Kafka Topic<br>vehicle_telemetry<br>(3 partitions)"]
+    end
+    
+    subgraph Processing
+        C["Spark Structured Streaming<br>- Enrichment<br>- Aggregation<br>- Alert Detection"]
+    end
+    
+    subgraph Storage/Visualization
+        D["Elasticsearch<br>(Index: vehicle_metrics)"]
+        E["Kibana<br>- Dashboards<br>- Alerts"]
+    end
